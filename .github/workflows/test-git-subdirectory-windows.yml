@@ -6,17 +6,19 @@ on:
       - main
       - dev
       - "maintain/*"
-    paths:
-      - "tests/cli/test_git_subdirectory.py"
-      - ".github/workflows/test-git-subdirectory-windows.yml"
+    paths-ignore:
+      - "docs/**"
+      - "news/**"
+      - "*.md"
   push:
     branches:
       - main
       - dev
       - "maintain/*"
-    paths:
-      - "tests/cli/test_git_subdirectory.py"
-      - ".github/workflows/test-git-subdirectory-windows.yml"
+    paths-ignore:
+      - "docs/**"
+      - "news/**"
+      - "*.md"
   workflow_dispatch:
 
 concurrency:
