@@ -49,7 +49,8 @@ def test_git_dependency_with_subdirectory(pdm, project, tmp_path):
     dbt_snowflake = next((p for p in lockfile_packages if p.get("name") == "dbt-snowflake"), None)
     assert dbt_snowflake is not None, "dbt-snowflake not found in lockfile"
     assert "git" in dbt_snowflake, "dbt-snowflake should be a git dependency"
-    assert "subdirectory" in dbt_snowflake.get("git", ""), "subdirectory parameter not preserved"
+    assert "subdirectory" in dbt_snowflake, "subdirectory parameter not preserved"
+    assert dbt_snowflake["subdirectory"] == "dbt-snowflake", "subdirectory value incorrect"
     
     # Test pdm sync - this should install the dependencies
     result = pdm(["sync", "-v"], obj=project, strict=True)
