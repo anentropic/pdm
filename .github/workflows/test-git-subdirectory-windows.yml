@@ -1,0 +1,59 @@
+name: Test Git Subdirectory on Windows
+
+on:
+  pull_request:
+    branches:
+      - main
+      - dev
+      - "maintain/*"
+    paths-ignore:
+      - "docs/**"
+      - "news/**"
+      - "*.md"
+  push:
+    branches:
+      - main
+      - dev
+      - "maintain/*"
+    paths-ignore:
+      - "docs/**"
+      - "news/**"
+      - "*.md"
+  workflow_dispatch:
+
+concurrency:
+  group: git-subdirectory-${{ github.event.number || github.run_id }}
+  cancel-in-progress: true
+
+jobs:
+  test-git-subdirectory-windows:
+    name: Test Git Subdirectory (Windows)
+    runs-on: windows-latest
+    
+    steps:
+      - uses: actions/checkout@v6.0.0
+      
+      - name: Setup Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+          cache: pip
+      
+      - name: Install Git
+        run: |
+          git --version
+      
+      - name: Install PDM
+        run: |
+          python -m pip install -U pip
+          python -m pip install -U .
+      
+      - name: Install Test Dependencies
+        run: |
+          pdm install -G test
+      
+      - name: Run Git Subdirectory Test
+        run: |
+          pdm run pytest tests/cli/test_git_subdirectory.py -v -s
+        env:
+          PYTHONDEVMODE: 1
