@@ -45,7 +45,7 @@ def test_git_dependency_with_subdirectory(pdm, project, tmp_path):
     assert project.lockfile.exists(), "Lock file was not created"
     
     # Verify the git dependency is in the lockfile
-    lockfile_packages = project.lockfile.get("package", [])
+    lockfile_packages = project.lockfile["package"]
     dbt_snowflake = next((p for p in lockfile_packages if p.get("name") == "dbt-snowflake"), None)
     assert dbt_snowflake is not None, "dbt-snowflake not found in lockfile"
     assert "git" in dbt_snowflake, "dbt-snowflake should be a git dependency"
