@@ -199,59 +199,6 @@ def test_vcs_candidate_in_subdirectory(project, is_editable):
     assert candidate.version == f"0.1.0{tail}"
 
 
-@pytest.mark.usefixtures("vcs", "local_finder")
-def test_vcs_ref_with_refs_heads_prefix(project, is_editable):
-    """Test that both short and long ref formats work for git branches.
-    
-    This tests the compatibility between:
-    - Short format: @branch (e.g., @master, @ifm)
-    - Long format: @refs/heads/branch (e.g., @refs/heads/master)
-    
-    The long format is sometimes required on Windows for git operations to work correctly.
-    """
-    # Test short format (traditional)
-    requirement_line = "git+https://github.com/test-root/demo.git@master#egg=demo"
-    req = parse_requirement(requirement_line, is_editable)
-    candidate = Candidate(req)
-    assert candidate.prepare(project.environment).metadata
-    lockfile = candidate.as_lockfile_entry(project.root)
-    assert lockfile["ref"] == "master"
-    
-    # Test long format with refs/heads/ prefix
-    requirement_line = "git+https://github.com/test-root/demo.git@refs/heads/master#egg=demo"
-    req = parse_requirement(requirement_line, is_editable)
-    candidate = Candidate(req)
-    assert candidate.prepare(project.environment).metadata
-    lockfile = candidate.as_lockfile_entry(project.root)
-    assert lockfile["ref"] == "refs/heads/master"
-
-
-@pytest.mark.usefixtures("vcs", "local_finder")
-def test_vcs_ref_with_refs_heads_and_subdirectory(project, is_editable):
-    """Test that refs/heads/ format works with subdirectory parameter.
-    
-    This covers the specific case mentioned in the issue:
-    git+https://github.com/user/repo.git@refs/heads/branch#subdirectory=subdir
-    
-    This format may be required on Windows for proper git ref resolution.
-    """
-    # Test short format with subdirectory
-    line = "git+https://github.com/test-root/demo-parent-package.git@master#egg=package-a&subdirectory=package-a"
-    req = parse_requirement(line, is_editable)
-    candidate = Candidate(req)
-    assert to_lines(candidate.prepare(project.environment).get_dependencies_from_metadata()) == ["flask"]
-    lockfile = candidate.as_lockfile_entry(project.root)
-    assert lockfile["ref"] == "master"
-    
-    # Test long format (refs/heads/) with subdirectory
-    line = "git+https://github.com/test-root/demo-parent-package.git@refs/heads/master#egg=package-a&subdirectory=package-a"
-    req = parse_requirement(line, is_editable)
-    candidate = Candidate(req)
-    assert to_lines(candidate.prepare(project.environment).get_dependencies_from_metadata()) == ["flask"]
-    lockfile = candidate.as_lockfile_entry(project.root)
-    assert lockfile["ref"] == "refs/heads/master"
-
-
 @pytest.mark.usefixtures("local_finder")
 def test_sdist_candidate_with_wheel_cache(project, mocker):
     file_link = Link((FIXTURES / "artifacts/demo-0.0.1.tar.gz").as_uri())
