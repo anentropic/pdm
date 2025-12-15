@@ -26,7 +26,7 @@ def test_git_dependency_with_subdirectory(pdm, project, tmp_path):
         "project": {
             "name": "test-git-subdirectory",
             "version": "0.1.0",
-            "requires-python": ">=3.9",
+            "requires-python": ">=3.10",
             "dependencies": [
                 "dbt-core>=1.10.11",
                 "dbt-snowflake @ git+https://github.com/ifm-pgarner/dbt-adapters.git@ifm#egg=dbt-snowflake&subdirectory=dbt-snowflake",
