@@ -29,6 +29,14 @@ REQUIREMENTS = [
         "MyProject @ git+http://git.example.com/MyProject.git@master",
     ),
     (
+        "git+http://git.example.com/MyProject.git@refs/heads/master#egg=MyProject",
+        "MyProject @ git+http://git.example.com/MyProject.git@refs/heads/master",
+    ),
+    (
+        "git+https://github.com/user/repo.git@refs/heads/branch#egg=pkg&subdirectory=subdir",
+        "pkg @ git+https://github.com/user/repo.git@refs/heads/branch#subdirectory=subdir",
+    ),
+    (
         "https://github.com/pypa/pip/archive/1.3.1.zip",
         None,
     ),
